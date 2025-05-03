@@ -5,8 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.androidlabs.databinding.FragmentActivityBinding
-import com.google.android.material.tabs.TabLayoutMediator
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
+import kotlin.text.get
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -15,14 +16,13 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [ActivityFragment.newInstance] factory method to
+ * Use the [UsersActivitiesFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ActivityFragment : Fragment() {
+class UsersActivitiesFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var binding: FragmentActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,29 +36,38 @@ class ActivityFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        binding = FragmentActivityBinding.inflate(inflater, container, false)
-        return binding.root
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_my_activities, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val adapter = VPAdapter(this)
-        binding.viewPager.adapter = adapter
+        val recycler = view.findViewById<RecyclerView>(R.id.recycler)
+        val activitiesList = ActivitiesList.getActivityData().filter { it.user != "me" }
+        val adapter = RVAdapter(activitiesList, RVAdapter.FragmentType.USERS)
+        adapter.onClick = {
+                position ->
+            val selectedActivity = activitiesList[position]
+            val detailFragment = DetailedActivityFragment.newInstance(selectedActivity)
 
-        val list = mutableListOf<String>()
-        list.add("Моя")
-        list.add("Пользователей")
+            val parent = parentFragment
 
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> "Мои"
-                1 -> "Пользователей"
-                else -> ""
+            if (parent != null && parent.isAdded) {
+                parent.parentFragmentManager.beginTransaction()
+                    .setCustomAnimations(
+                        R.anim.slide_to_right,
+                        R.anim.slide_out_left,
+                        R.anim.slide_to_left,
+                        R.anim.slide_out_right
+                    )
+                    .replace(R.id.container, detailFragment)
+                    .addToBackStack(null)
+                    .commit()
             }
-        }.attach()
+        }
 
-
+        recycler.adapter = adapter
         super.onViewCreated(view, savedInstanceState)
+
     }
 
     companion object {
@@ -68,12 +77,12 @@ class ActivityFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment BlankFragment.
+         * @return A new instance of fragment TaskListFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            ActivityFragment().apply {
+            UsersActivitiesFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
