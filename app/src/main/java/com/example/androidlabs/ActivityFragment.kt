@@ -1,5 +1,6 @@
 package com.example.androidlabs
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -42,6 +43,12 @@ class ActivityFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        binding.playBtn.setOnClickListener {
+            val intent = Intent(requireActivity(), BeforeTrackingActivity::class.java)
+            startActivity(intent)
+        }
+
         val adapter = VPAdapter(this)
         binding.viewPager.adapter = adapter
 

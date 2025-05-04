@@ -13,6 +13,12 @@
         android:theme="@style/Theme.AndroidLabs"
         tools:targetApi="31">
         <activity
+            android:name=".TrackingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BeforeTrackingActivity"
+            android:exported="false" />
+        <activity
             android:name=".BaseActivity"
             android:exported="false" />
         <activity
