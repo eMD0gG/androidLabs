@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.ViewModelProvider
 import kotlin.text.get
 
 // TODO: Rename parameter arguments, choose names that match
@@ -22,6 +23,8 @@ class MyActivitiesFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    private lateinit var myVM: MyViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,13 +44,21 @@ class MyActivitiesFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val activitiesList = ActivitiesList.getActivityData().filter { it.user == "me" }
-//        Log.d("MyFragment", "Filtered activities: ${activitiesList.size}")
+        super.onViewCreated(view, savedInstanceState)
+        super.onViewCreated(view, savedInstanceState)
+        myVM = ViewModelProvider(requireActivity()).get(MyViewModel::class.java)
+
         val recycler = view.findViewById<RecyclerView>(R.id.recycler)
-        val adapter = RVAdapter(activitiesList, RVAdapter.FragmentType.MY)
+        val adapter = RVAdapter(emptyList(), RVAdapter.FragmentType.USERS)
+        recycler.adapter = adapter
+
+        myVM.allTaskItems.observe(viewLifecycleOwner){
+                newActivitiesList ->
+            adapter.updateData(newActivitiesList)
+        }
         adapter.onClick = {
                 position ->
-            val selectedActivity = activitiesList[position]
+            val selectedActivity = adapter.getItem(position)
             val detailFragment = DetailedActivityFragment.newInstance(selectedActivity)
 
             val parent = parentFragment
@@ -65,9 +76,6 @@ class MyActivitiesFragment : Fragment() {
                     .commit()
             }
         }
-
-        recycler.adapter = adapter
-        super.onViewCreated(view, savedInstanceState)
 
     }
 

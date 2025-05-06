@@ -51,10 +51,10 @@ class DetailedActivityFragment : Fragment() {
         val activityType: TextView = view.findViewById(R.id.activity_type)
         val timestamp: TextView = view.findViewById(R.id.timestamp)
 
-        distance.text = ta?.distance
-        time.text = ta?.time
-        activityType.text = ta?.activityType
-        timestamp.text = ta?.timestamp
+        distance.text = "10 м"
+        time.text = "5 мин"
+        activityType.text = ta?.activityType?.displayName
+        timestamp.text = ta?.id.toString()
 
         super.onViewCreated(view, savedInstanceState)
     }

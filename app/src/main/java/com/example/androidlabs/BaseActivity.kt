@@ -5,12 +5,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.room.Room
 import com.example.androidlabs.databinding.ActivityBaseBinding
 import com.example.androidlabs.databinding.ActivityRegistrationBinding
 
 class BaseActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBaseBinding
+    lateinit var myVM : MyViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +26,7 @@ class BaseActivity : AppCompatActivity() {
             insets
         }
 
+        myVM = ViewModelProvider(this).get(MyViewModel::class.java)
         val fragmentActivity = ActivityFragment.newInstance("", "")
         val fragmentProfile = ProfileFragment.newInstance("", "")
 

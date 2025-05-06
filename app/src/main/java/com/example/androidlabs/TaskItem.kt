@@ -1,9 +1,19 @@
 package com.example.androidlabs
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+enum class activType(val displayName: String){
+    RUNNING("Бег"),
+    BICYCLE("Велосипед"),
+    WALKING("Шаг")
+}
+
+@Entity
 data class TaskItem(
-    val distance: String,
-    val time: String,
-    val activityType: String,
-    val timestamp: String,
-    val user: String
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val user: String,
+    val activityType: activType,
+    val startTime: Long = System.currentTimeMillis(),
+    val endTime: Long = System.currentTimeMillis() + 300000
 ) : java.io.Serializable
